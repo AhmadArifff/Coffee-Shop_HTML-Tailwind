@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KopiKita — Coffee Shop</title>
+  <!-- Add Font Awesome CDN in the <head> -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  <style>
+    /* Smooth scroll + basic transitions */
+    html { scroll-behavior: smooth; }
+    .card-hover { transition: transform .2s ease, box-shadow .2s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.08); }
+    .hide-scrollbar { scrollbar-width: none; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+  <!-- Toast -->
+  <div id="toast" class="fixed z-50 top-4 left-1/2 -translate-x-1/2 hidden px-4 py-2 rounded-xl bg-stone-900 text-white shadow-lg"></div>
+
+  <!-- Navbar -->
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-stone-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <a href="#" class="flex items-center gap-2 font-semibold text-stone-800">
+          <!-- <i data-lucide="cup-soda" class="w-6 h-6 text-amber-700"></i> -->
+          <i class="fas fa-mug-hot text-amber-500"></i>
+          <span>KopiKita</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm">
+          <button data-link="home" class="nav-link hover:text-amber-700">Home</button>
+          <button data-link="about" class="nav-link hover:text-amber-700">About</button>
+          <button data-link="catalog" class="nav-link hover:text-amber-700">Katalog</button>
+          <button data-link="payment" class="nav-link hover:text-amber-700">Payment</button>
+          <button id="openCart" class="relative rounded-full p-2 hover:bg-stone-100">
+            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+            <span id="cartCount" class="absolute -top-1 -right-1 text-[10px] bg-amber-600 text-white rounded-full px-1.5 py-0.5">0</span>
+          </button>
+        </nav>
+        <!-- Mobile -->
+        <button id="hamburger" class="md:hidden rounded-lg p-2 hover:bg-stone-100">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden hidden border-t border-stone-200 bg-white">
+      <div class="px-4 py-3 flex flex-col gap-2">
+        <button data-link="home" class="nav-link text-left py-2">Home</button>
+        <button data-link="catalog" class="nav-link text-left py-2">Katalog</button>
+        <button data-link="payment" class="nav-link text-left py-2">Payment</button>
+        <button id="openCartMobile" class="flex items-center gap-2 py-2">
+          <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+          <span>Keranjang</span>
+          <span id="cartCountMobile" class="ml-auto text-xs bg-amber-600 text-white rounded-full px-2">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="min-h-screen">
+    <!-- Hero / Home -->
+    <section id="home" class="bg-gradient-to-b from-amber-50 to-stone-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h1 class="text-3xl md:text-5xl font-extrabold leading-tight text-stone-900">Ngopi nikmat, <span class="text-amber-700">cukup klik</span>.</h1>
+          <p class="mt-4 text-stone-600">Pilih kopi favoritmu, masukkan keranjang, dan bayar via QRIS, transfer bank, atau dompet digital. Serius, semudah itu.</p>
+          <div class="mt-6 flex gap-3">
+            <button data-link="catalog" class="px-5 py-3 rounded-2xl bg-amber-700 text-white hover:bg-amber-800">Lihat Katalog</button>
+            <button id="goToPayment" class="px-5 py-3 rounded-2xl bg-stone-900 text-white hover:bg-stone-800">Ke Payment</button>
+          </div>
+        </div>
+        <div class="relative">
+          <img src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop" alt="Coffee" class="rounded-3xl shadow-xl w-full object-cover h-72 md:h-[24rem]"/>
+          <div class="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-lg p-3 flex items-center gap-2">
+            <i data-lucide="star" class="w-4 h-4 text-amber-600"></i>
+            <span class="text-sm">4.9/5 dari para pecinta kopi</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catalog -->
+    <section id="catalog" class="py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end gap-4 md:gap-6 justify-between">
+          <div>
+            <h2 class="text-2xl md:text-3xl font-bold">Katalog Coffee</h2>
+            <p class="text-stone-600">Pilih varian favoritmu. Dijamin bikin semangat kerja (dan ngoding) naik 200%.*</p>
+          </div>
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <div class="flex items-center gap-2 bg-white border border-stone-200 rounded-2xl px-3 py-2 w-full md:w-80">
+              <i data-lucide="search" class="w-4 h-4 text-stone-500"></i>
+              <input id="searchInput" type="text" placeholder="Cari kopi…" class="w-full outline-none">
+            </div>
+            <select id="sortSelect" class="bg-white border border-stone-200 rounded-2xl px-3 py-2">
+              <option value="default">Sortir</option>
+              <option value="price-asc">Harga: termurah</option>
+              <option value="price-desc">Harga: termahal</option>
+              <option value="name-asc">Nama A–Z</option>
+              <option value="name-desc">Nama Z–A</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="catalogGrid" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>
+    </section>
+
+    <!-- Payment -->
+    <section id="payment" class="py-12 bg-white border-t border-stone-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h2 class="text-2xl md:text-3xl font-bold">Payment</h2>
+            <p class="text-stone-600">Pilih metode pembayaran favoritmu. Kita dukung QRIS, transfer bank, dan dompet digital.</p>
+          </div>
+          <div class="text-sm bg-stone-100 text-stone-700 rounded-xl px-3 py-2">
+            Total belanja: <span id="payTotal" class="font-semibold">Rp0</span>
+          </div>
+        </div>
+
+        <div class="mt-6 grid md:grid-cols-3 gap-6">
+          <!-- Methods -->
+          <div class="md:col-span-1 bg-stone-50 border border-stone-200 rounded-2xl p-4">
+            <h3 class="font-semibold mb-3">Metode</h3>
+            <div class="flex flex-col gap-2">
+              <label class="flex items-center gap-2 p-2 rounded-xl hover:bg-white cursor-pointer">
+                <input type="radio" name="paymethod" value="qris" class="accent-amber-700" checked>
+                <i data-lucide="qr-code" class="w-4 h-4"></i>
+                <span>QRIS</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-xl hover:bg-white cursor-pointer">
+                <input type="radio" name="paymethod" value="bank" class="accent-amber-700">
+                <i data-lucide="banknote" class="w-4 h-4"></i>
+                <span>Transfer Bank</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 rounded-xl hover:bg-white cursor-pointer">
+                <input type="radio" name="paymethod" value="ewallet" class="accent-amber-700">
+                <i data-lucide="wallet" class="w-4 h-4"></i>
+                <span>Dompet Digital</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Panels -->
+          <div class="md:col-span-2 bg-white border border-stone-200 rounded-2xl p-4">
+            <!-- QRIS Panel -->
+            <div id="panel-qris" class="space-y-4">
+              <div class="flex items-center gap-2">
+                <i data-lucide="qr-code" class="w-5 h-5 text-amber-700"></i>
+                <h3 class="font-semibold">Bayar dengan QRIS</h3>
+              </div>
+              <p class="text-sm text-stone-600">Scan QR di bawah menggunakan aplikasi bank atau e-wallet yang mendukung QRIS.</p>
+              <div class="flex items-center gap-6">
+                <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200">
+                  <!-- Placeholder QR (ganti integrasi gateway di produksi) -->
+                  <img id="qrisImg" alt="QRIS" class="w-48 h-48 rounded-md" src="data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><rect width='100%' height='100%' fill='white'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='18' fill='black'>QRIS Placeholder</text></svg>">
+                </div>
+                <div class="text-sm">
+                  <div>Order ID: <span id="orderId" class="font-mono font-semibold">—</span></div>
+                  <div>Jumlah: <span id="orderAmount" class="font-semibold">Rp0</span></div>
+                  <button id="btnPaidQris" class="mt-3 px-4 py-2 rounded-xl bg-amber-700 text-white hover:bg-amber-800">Saya sudah bayar</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bank Panel -->
+            <div id="panel-bank" class="space-y-4 hidden">
+              <div class="flex items-center gap-2">
+                <i data-lucide="banknote" class="w-5 h-5 text-amber-700"></i>
+                <h3 class="font-semibold">Transfer Bank</h3>
+              </div>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm">Pilih Bank</label>
+                  <select id="bankSelect" class="w-full mt-1 bg-white border border-stone-200 rounded-xl px-3 py-2">
+                    <option value="BCA">BCA</option>
+                    <option value="BRI">BRI</option>
+                    <option value="Mandiri">Mandiri</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-sm">Virtual Account</label>
+                  <div class="mt-1 flex items-center gap-2 bg-stone-50 border border-stone-200 rounded-xl px-3 py-2">
+                    <span id="vaNumber" class="font-mono">0001 2345 6789 0123</span>
+                    <button id="copyVA" class="ml-auto text-xs px-2 py-1 rounded-lg bg-stone-900 text-white">Copy</button>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button id="btnPaidBank" class="px-4 py-2 rounded-xl bg-amber-700 text-white hover:bg-amber-800">Saya sudah transfer</button>
+              </div>
+            </div>
+
+            <!-- E-Wallet Panel -->
+            <div id="panel-ewallet" class="space-y-4 hidden">
+              <div class="flex items-center gap-2">
+                <i data-lucide="wallet" class="w-5 h-5 text-amber-700"></i>
+                <h3 class="font-semibold">Dompet Digital</h3>
+              </div>
+              <div class="grid sm:grid-cols-3 gap-4">
+                <label class="border border-stone-200 rounded-2xl p-3 flex items-center gap-2 cursor-pointer hover:shadow-sm">
+                  <input type="radio" name="ewallet" value="OVO" class="accent-amber-700" checked>
+                  <span>OVO</span>
+                </label>
+                <label class="border border-stone-200 rounded-2xl p-3 flex items-center gap-2 cursor-pointer hover:shadow-sm">
+                  <input type="radio" name="ewallet" value="GoPay" class="accent-amber-700">
+                  <span>GoPay</span>
+                </label>
+                <label class="border border-stone-200 rounded-2xl p-3 flex items-center gap-2 cursor-pointer hover:shadow-sm">
+                  <input type="radio" name="ewallet" value="DANA" class="accent-amber-700">
+                  <span>DANA</span>
+                </label>
+              </div>
+              <div class="text-sm bg-stone-50 border border-stone-200 rounded-2xl p-3">
+                Kirim ke nomor <span class="font-mono font-semibold">0812-3456-7890</span> a.n. <span class="font-semibold">KopiKita</span>. Masukkan nominal sesuai total.
+              </div>
+              <div>
+                <button id="btnPaidEwallet" class="px-4 py-2 rounded-xl bg-amber-700 text-white hover:bg-amber-800">Saya sudah bayar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cart Drawer -->
+  <aside id="cartDrawer" class="fixed inset-y-0 right-0 w-full sm:w-[28rem] bg-white shadow-2xl border-l border-stone-200 translate-x-full transition-transform duration-200 z-50 flex flex-col">
+    <div class="p-4 border-b border-stone-200 flex items-center gap-2">
+      <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+      <h3 class="font-semibold">Keranjang</h3>
+      <button id="closeCart" class="ml-auto rounded-lg p-2 hover:bg-stone-100"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+    <div id="cartItems" class="flex-1 overflow-y-auto p-4 space-y-3 hide-scrollbar"></div>
+    <div class="p-4 border-t border-stone-200 space-y-2">
+      <div class="flex items-center justify-between text-sm">
+        <span>Subtotal</span>
+        <span id="cartSubtotal" class="font-semibold">Rp0</span>
+      </div>
+      <div class="flex items-center justify-between text-sm">
+        <span>PPN (11%)</span>
+        <span id="cartTax" class="font-semibold">Rp0</span>
+      </div>
+      <div class="flex items-center justify-between text-base border-t border-stone-200 pt-2">
+        <span class="font-semibold">Total</span>
+        <span id="cartTotal" class="font-bold">Rp0</span>
+      </div>
+      <button id="checkoutBtn" class="w-full mt-2 px-4 py-3 rounded-2xl bg-stone-900 text-white hover:bg-stone-800">Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="bg-stone-900 text-stone-200 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid md:grid-cols-3 gap-10">
+      
+      <!-- Brand -->
+      <div>
+        <div class="flex items-center gap-2 font-semibold text-white">
+          <i class="fas fa-mug-hot text-amber-500"></i>
+          <!-- <i data-lucide="cup-soda" class="w-6 h-6 text-amber-500"></i> -->
+          <span>KopiKita</span>
+        </div>
+        <p class="mt-4 text-stone-400 text-sm">
+          Teman setia begadang, nugas, dan ngoding.  
+          Jangan lupa kopi dulu biar hidup gak error.
+        </p>
+      </div>
+
+      <!-- Social Media -->
+      <div>
+        <h3 class="text-white font-semibold mb-3">Media Sosial</h3>
+        <ul class="space-y-2 text-sm">
+          <li>
+        <a href="https://www.youtube.com/@kopikita" target="_blank" rel="noopener" class="flex items-center gap-2 hover:text-amber-500">
+          <i data-lucide="youtube" class="w-4 h-4 text-amber-500"></i>
+          <span>YouTube</span>
+        </a>
+          </li>
+          <li>
+        <a href="https://twitter.com/kopikita" target="_blank" rel="noopener" class="flex items-center gap-2 hover:text-amber-500">
+          <i data-lucide="twitter" class="w-4 h-4 text-amber-500"></i>
+          <span>X (Twitter)</span>
+        </a>
+          </li>
+          <li>
+        <a href="https://instagram.com/kopikita" target="_blank" rel="noopener" class="flex items-center gap-2 hover:text-amber-500">
+          <i data-lucide="instagram" class="w-4 h-4 text-amber-500"></i>
+          <span>Instagram</span>
+        </a>
+          </li>
+          <li>
+        <a href="https://tiktok.com/@kopikita" target="_blank" rel="noopener" class="flex items-center gap-2 hover:text-amber-500">
+          <i class="fab fa-tiktok w-4 h-4 text-amber-500"></i>
+          <span>TikTok</span>
+        </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h3 class="text-white font-semibold mb-3">Kontak</h3>
+        <ul class="space-y-2 text-sm">
+          <li class="flex items-center gap-2">
+            <i data-lucide="mail" class="w-4 h-4 text-amber-500"></i>
+            <span>halo@kopikita.id</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <i data-lucide="phone" class="w-4 h-4 text-amber-500"></i>
+            <span>+62 812-3456-7890</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <i data-lucide="map-pin" class="w-4 h-4 text-amber-500"></i>
+            <span>Jl. Kopi No. 1, Jakarta</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom -->
+    <div class="border-t border-stone-700 py-4 text-center text-xs text-stone-500">
+      © <span id="year"></span> KopiKita. Dibuat dengan HTML + Tailwind + JS Vanilla.  
+      <br class="sm:hidden"/>Ngopi boleh, nge-commit pas ngantuk jangan!
+    </div>
+  </footer>
+
+
+  <script>
+    // ===== Utils =====
+    const el = (sel, parent=document) => parent.querySelector(sel);
+    const els = (sel, parent=document) => [...parent.querySelectorAll(sel)];
+    const formatIDR = n => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n);
+    const rnd = (min, max) => Math.floor(Math.random()*(max-min+1))+min;
+
+    // ===== State =====
+    const STORAGE_KEY = 'kopikita_cart_v1';
+    const state = {
+      products: [
+        { id: 'ESP', name: 'Espresso', price: 18000, img: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?q=80&w=1200&auto=format&fit=crop', desc: 'Shot pekat untuk start kilat.' },
+        { id: 'AMR', name: 'Americano', price: 20000, img: 'https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=1200&auto=format&fit=crop', desc: 'Espresso + air panas. Simple, strong.' },
+        { id: 'LAT', name: 'Caffè Latte', price: 25000, img: 'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1200&auto=format&fit=crop', desc: 'Espresso + susu steamed, creamy.' },
+        { id: 'CAP', name: 'Cappuccino', price: 26000, img: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1200&auto=format&fit=crop', desc: 'Foam tebal, latte art optional 😉' },
+        { id: 'MOC', name: 'Mocha', price: 28000, img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1200&auto=format&fit=crop', desc: 'Cokelat + kopi, manis legit.' },
+        { id: 'V60', name: 'V60 Manual Brew', price: 30000, img: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?q=80&w=1200&auto=format&fit=crop', desc: 'Tasting notes keluar semua.' },
+        { id: 'CLD', name: 'Cold Brew', price: 27000, img: 'https://images.unsplash.com/photo-1485808191679-5f86510681a3?q=80&w=1200&auto=format&fit=crop', desc: 'Segar, low acidity.' },
+        { id: 'MCH', name: 'Matcha Latte', price: 29000, img: 'https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?q=80&w=1200&auto=format&fit=crop', desc: 'Buat yang “aku bukan coffee person”.' },
+        { id: 'CRM', name: 'Caramel Macchiato', price: 32000, img: 'https://images.unsplash.com/photo-1510853675132-58241c941e97?q=80&w=1200&auto=format&fit=crop', desc: 'Manis-karamel, crowd-pleaser.' }
+      ],
+      cart: JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'),
+      orderId: 'ORD' + Date.now().toString().slice(-6),
+    };
+
+    const saveCart = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(state.cart));
+
+    // ===== Render Navbar counts =====
+    function updateCartCount() {
+      const count = state.cart.reduce((a, c) => a + c.qty, 0);
+      el('#cartCount').textContent = count;
+      el('#cartCountMobile').textContent = count;
+    }
+
+    // ===== Catalog Rendering =====
+    function renderCatalog(items) {
+      const grid = el('#catalogGrid');
+      grid.innerHTML = '';
+      items.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'bg-white border border-stone-200 rounded-2xl overflow-hidden card-hover flex flex-col';
+        card.innerHTML = `
+          <img src="${p.img}" alt="${p.name}" class="w-full h-40 object-cover">
+          <div class="p-4 flex-1 flex flex-col">
+            <div class="flex items-start justify-between gap-2">
+              <h3 class="font-semibold">${p.name}</h3>
+              <span class="text-amber-700 font-semibold">${formatIDR(p.price)}</span>
+            </div>
+            <p class="text-sm text-stone-600 mt-1 flex-1">${p.desc}</p>
+            <div class="mt-3 flex items-center gap-2">
+              <button data-id="${p.id}" class="addBtn px-4 py-2 rounded-xl bg-stone-900 text-white hover:bg-stone-800 flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i>Tambah</button>
+              <button data-id="${p.id}" class="buyNowBtn px-4 py-2 rounded-xl bg-amber-700 text-white hover:bg-amber-800">Beli</button>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+      els('.addBtn').forEach(b => b.addEventListener('click', () => addToCart(b.dataset.id)));
+      els('.buyNowBtn').forEach(b => b.addEventListener('click', () => { addToCart(b.dataset.id); openCart(); }));
+    }
+
+    function addToCart(id) {
+      const existing = state.cart.find(i => i.id === id);
+      if (existing) existing.qty += 1; else {
+        const p = state.products.find(p => p.id === id);
+        state.cart.push({ id: p.id, name: p.name, price: p.price, img: p.img, qty: 1 });
+      }
+      saveCart();
+      updateCartCount();
+      renderCart();
+      showToast('Ditambahkan ke keranjang');
+      updatePaymentSummary();
+    }
+
+    // ===== Cart =====
+    function renderCart() {
+      const list = el('#cartItems');
+      list.innerHTML = '';
+      state.cart.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'flex gap-3 items-center border border-stone-200 rounded-xl p-2';
+        row.innerHTML = `
+          <img src="${item.img}" class="w-16 h-16 rounded-lg object-cover"/>
+          <div class="flex-1">
+            <div class="font-semibold">${item.name}</div>
+            <div class="text-sm text-stone-600">${formatIDR(item.price)}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="qtyBtn rounded-lg p-2 hover:bg-stone-100" data-action="dec" data-id="${item.id}"><i data-lucide="minus" class="w-4 h-4"></i></button>
+            <span class="w-6 text-center">${item.qty}</span>
+            <button class="qtyBtn rounded-lg p-2 hover:bg-stone-100" data-action="inc" data-id="${item.id}"><i data-lucide="plus" class="w-4 h-4"></i></button>
+            <button class="removeBtn rounded-lg p-2 hover:bg-stone-100" data-id="${item.id}"><i data-lucide="trash" class="w-4 h-4"></i></button>
+          </div>`;
+        list.appendChild(row);
+      });
+      lucide.createIcons();
+
+      // events
+      els('.qtyBtn').forEach(btn => btn.addEventListener('click', () => changeQty(btn.dataset.id, btn.dataset.action)));
+      els('.removeBtn').forEach(btn => btn.addEventListener('click', () => removeItem(btn.dataset.id)));
+
+      const subtotal = state.cart.reduce((a, c) => a + c.price * c.qty, 0);
+      const tax = Math.round(subtotal * 0.11);
+      const total = subtotal + tax;
+      el('#cartSubtotal').textContent = formatIDR(subtotal);
+      el('#cartTax').textContent = formatIDR(tax);
+      el('#cartTotal').textContent = formatIDR(total);
+    }
+
+    function changeQty(id, action) {
+      const item = state.cart.find(i => i.id === id);
+      if (!item) return;
+      if (action === 'inc') item.qty += 1;
+      if (action === 'dec') item.qty = Math.max(1, item.qty - 1);
+      saveCart();
+      renderCart();
+      updateCartCount();
+      updatePaymentSummary();
+    }
+
+    function removeItem(id) {
+      state.cart = state.cart.filter(i => i.id !== id);
+      saveCart();
+      renderCart();
+      updateCartCount();
+      updatePaymentSummary();
+    }
+
+    function openCart() { el('#cartDrawer').classList.remove('translate-x-full'); }
+    function closeCart() { el('#cartDrawer').classList.add('translate-x-full'); }
+
+    // ===== Payment =====
+    function updatePaymentSummary() {
+      const total = state.cart.reduce((a, c) => a + c.price * c.qty, 0);
+      const tax = Math.round(total * 0.11);
+      const grand = total + tax;
+      el('#payTotal').textContent = formatIDR(grand);
+      el('#orderAmount').textContent = formatIDR(grand);
+      el('#orderId').textContent = state.orderId;
+    }
+
+    function switchPanel(panel) {
+      ['qris','bank','ewallet'].forEach(p => el('#panel-' + p).classList.toggle('hidden', p !== panel));
+    }
+
+    // ===== Search & Sort =====
+    function applySearchAndSort() {
+      const q = el('#searchInput').value.toLowerCase();
+      const sort = el('#sortSelect').value;
+      let items = state.products.filter(p => p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+      if (sort === 'price-asc') items.sort((a,b)=>a.price-b.price);
+      if (sort === 'price-desc') items.sort((a,b)=>b.price-a.price);
+      if (sort === 'name-asc') items.sort((a,b)=>a.name.localeCompare(b.name));
+      if (sort === 'name-desc') items.sort((a,b)=>b.name.localeCompare(a.name));
+      renderCatalog(items);
+    }
+
+    // ===== Toast =====
+    let toastTimer;
+    function showToast(msg) {
+      const t = el('#toast');
+      t.textContent = msg;
+      t.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=> t.classList.add('hidden'), 1800);
+    }
+
+    // ===== Nav routing (simple show section) =====
+    function go(section) {
+      if (section === 'catalog') location.hash = '#catalog';
+      if (section === 'home') location.hash = '#home';
+      if (section === 'payment') location.hash = '#payment';
+      if (section === 'cart') openCart();
+    }
+
+    // ===== Events =====
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      el('#year').textContent = new Date().getFullYear();
+
+      renderCatalog(state.products);
+      renderCart();
+      updateCartCount();
+      updatePaymentSummary();
+
+      // Nav
+      els('[data-link]').forEach(btn => btn.addEventListener('click', () => go(btn.dataset.link)));
+      el('#goToPayment').addEventListener('click', () => go('payment'));
+
+      // Mobile menu
+      el('#hamburger').addEventListener('click', () => el('#mobileMenu').classList.toggle('hidden'));
+
+      // Cart open/close
+      el('#openCart').addEventListener('click', openCart);
+      el('#openCartMobile').addEventListener('click', openCart);
+      el('#closeCart').addEventListener('click', closeCart);
+      el('#checkoutBtn').addEventListener('click', () => { closeCart(); go('payment'); showToast('Lanjut ke pembayaran'); });
+
+      // Search/sort
+      el('#searchInput').addEventListener('input', applySearchAndSort);
+      el('#sortSelect').addEventListener('change', applySearchAndSort);
+
+      // Payment method switch
+      els('input[name="paymethod"]').forEach(r => r.addEventListener('change', (e) => switchPanel(e.target.value)));
+
+      // Copy VA
+      el('#bankSelect').addEventListener('change', () => {
+        const prefix = { BCA:'021', BRI:'002', Mandiri:'008' }[el('#bankSelect').value] || '000';
+        el('#vaNumber').textContent = `${prefix} ${rnd(1000,9999)} ${rnd(1000,9999)} ${rnd(1000,9999)}`;
+      });
+      el('#copyVA').addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(el('#vaNumber').textContent.replace(/\s/g,'')); showToast('VA disalin'); } catch { showToast('Gagal menyalin'); }
+      });
+
+      // Payment confirmation buttons (mock)
+      el('#btnPaidQris').addEventListener('click', () => finishOrder('QRIS'));
+      el('#btnPaidBank').addEventListener('click', () => finishOrder('Transfer Bank'));
+      el('#btnPaidEwallet').addEventListener('click', () => {
+        const w = (el('input[name="ewallet"]:checked')||{}).value || 'E-Wallet';
+        finishOrder(w);
+      });
+    });
+
+    function finishOrder(method) {
+      if (state.cart.length === 0) { showToast('Keranjang masih kosong'); return; }
+      const total = el('#payTotal').textContent;
+      alert(`Pembayaran terkonfirmasi\nMetode: ${method}\nOrder: ${state.orderId}\nTotal: ${total}`);
+      // reset
+      state.cart = [];
+      saveCart();
+      renderCart();
+      updateCartCount();
+      updatePaymentSummary();
+      state.orderId = 'ORD' + Date.now().toString().slice(-6);
+      showToast('Order selesai. Terima kasih!');
+    }
+  </script>
+</body>
+</html>
