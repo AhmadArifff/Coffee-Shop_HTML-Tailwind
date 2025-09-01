@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — KopiKita</title>
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Add Font Awesome CDN in the <head> -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Swiper (Experts Slider) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <!-- AOS (Animate On Scroll) -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css"/>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <!-- AOS (Animate On Scroll) + custom CSS supaya smooth. -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <link rel="preconnect" href="https://images.unsplash.com" />
+  <style>
+    html { scroll-behavior: smooth; }
+    .card-hover { transition: transform .2s ease, box-shadow .2s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.08); }
+    .hide-scrollbar { scrollbar-width: none; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .swiper-button-prev::after,
+    .swiper-button-next::after {
+        font-size: 14px !important; /* default 20px */
+    }
+    /* Line utama di sisi kiri */
+    .timeline-container::before {
+        content: "";
+        position: absolute;
+        left: 10px;
+        top: 0;
+        width: 4px;
+        height: 100%;
+        background: #d6d3d1; /* stone-300 */
+        transform-origin: top;
+        transform: scaleY(0);
+        animation: growLine 20s forwards;
+    }
+
+    /* Animasi Garis */
+    @keyframes growLine {
+        to {
+        transform: scaleY(1);
+        }
+    }
+    .animate-growLine {
+        animation: growLine 40s ease-out forwards;
+    }
+
+    /* Animasi Stepper (Dot) */
+    @keyframes activateDot {
+        0% {
+        background-color: #d6d3d1; /* stone-300 */
+        transform: scale(1);
+        }
+        50% {
+        background-color: #fbbf24; /* amber-500 */
+        transform: scale(1.2);
+        }
+        100% {
+        background-color: #f59e0b; /* amber-600 */
+        transform: scale(1);
+        }
+    }
+    .stepper-dot {
+        animation: activateDot 200s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+   <!-- Toast -->
+  <div id="toast" class="fixed z-50 top-4 left-1/2 -translate-x-1/2 hidden px-4 py-2 rounded-xl bg-stone-900 text-white shadow-lg"></div>
+
+  <!-- Navbar -->
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-stone-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <a href="#" class="flex items-center gap-2 font-semibold text-stone-800">
+          <i class="fas fa-mug-hot text-amber-500"></i>
+          <span>KopiKita</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm">
+          <button data-link="home" class="nav-link hover:text-amber-700">Home</button>
+          <button data-link="about" class="nav-link hover:text-amber-700">About</button>
+          <button data-link="catalog" class="nav-link hover:text-amber-700">Katalog</button>
+          <button data-link="payment" class="nav-link hover:text-amber-700">Payment</button>
+          <button id="openCart" class="relative rounded-full p-2 hover:bg-stone-100">
+            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+            <span id="cartCount" class="absolute -top-1 -right-1 text-[10px] bg-amber-600 text-white rounded-full px-1.5 py-0.5">0</span>
+          </button>
+        </nav>
+        <!-- Mobile -->
+        <button id="hamburger" class="md:hidden rounded-lg p-2 hover:bg-stone-100">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="md:hidden hidden border-t border-stone-200 bg-white">
+      <div class="px-4 py-3 flex flex-col gap-2">
+        <button data-link="home" class="nav-link text-left py-2">Home</button>
+        <button data-link="about" class="nav-link text-left py-2">About</button>
+        <button data-link="catalog" class="nav-link text-left py-2">Katalog</button>
+        <button data-link="payment" class="nav-link text-left py-2">Payment</button>
+        <button id="openCartMobile" class="flex items-center gap-2 py-2">
+          <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+          <span>Keranjang</span>
+          <span id="cartCountMobile" class="ml-auto text-xs bg-amber-600 text-white rounded-full px-2">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. About KopiKita / Hero -->
+    <section id="about" class="relative overflow-hidden">
+      <img src="https://images.unsplash.com/photo-1517701604599-bb29b565090c?q=80&w=1600&auto=format&fit=crop" alt="Coffee hero"
+           class="absolute inset-0 w-full h-full object-cover opacity-20"/>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <div class="max-w-3xl" data-aos="fade-up">
+          <h1 class="text-3xl md:text-5xl font-extrabold text-stone-900">Tentang <span class="text-amber-700">KopiKita</span></h1>
+          <p class="mt-4 text-stone-700 text-lg">KopiKita adalah rumah bagi para penikmat kopi yang ingin kualitas barista, kecepatan teknologi, dan kenyamanan satu klik. Visi kami: membuat setiap momen jadi istimewa—satu cangkir demi satu cangkir.</p>
+          <div class="mt-6 flex gap-3">
+            <a href="#story" class="px-5 py-3 rounded-2xl bg-amber-700 text-white hover:bg-amber-800">Lanjut Cerita</a>
+            <a href="#products" class="px-5 py-3 rounded-2xl bg-white border border-stone-200 hover:shadow-sm">Lihat Produk</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Our Story -->
+    <section id="story" class="py-16 bg-white border-t border-stone-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-10 items-center">
+        <div data-aos="fade-right">
+          <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1600&auto=format&fit=crop" alt="KopiKita awal" class="rounded-3xl shadow-xl w-full object-cover h-72 md:h-[26rem]">
+        </div>
+        <div data-aos="fade-left">
+          <h2 class="text-2xl md:text-3xl font-bold">Our Story</h2>
+          <p class="mt-3 text-stone-600">Berawal dari kedai kecil pada 2018, kami bereksperimen dengan biji lokal dan teknik roasting modern. Kini, kami tumbuh menjadi brand yang memadukan <em>craft</em> specialty coffee dan teknologi pemesanan yang mulus.</p>
+          <dl class="mt-6 grid grid-cols-2 gap-4 text-sm">
+            <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200">
+              <dt class="font-semibold">2018</dt>
+              <dd class="text-stone-600">Kedai pertama dibuka</dd>
+            </div>
+            <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200">
+              <dt class="font-semibold">2021</dt>
+              <dd class="text-stone-600">Mulai platform online</dd>
+            </div>
+            <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200">
+              <dt class="font-semibold">2023</dt>
+              <dd class="text-stone-600">100K+ cangkir terjual</dd>
+            </div>
+            <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200">
+              <dt class="font-semibold">2025</dt>
+              <dd class="text-stone-600">Ekspansi kemitraan</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Our Product -->
+    <section id="products" class="py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-end justify-between gap-6" data-aos="fade-up">
+          <div>
+            <h2 class="text-2xl md:text-3xl font-bold">Our Product</h2>
+            <p class="text-stone-600">Kurasi rasa terbaik dari biji lokal hingga signature blends.</p>
+          </div>
+          <div class="hidden md:block text-sm text-stone-500">Hover untuk melihat detail</div>
+        </div>
+        <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card -->
+          <article class="bg-white border border-stone-200 rounded-2xl overflow-hidden card-hover" data-aos="fade-up" data-aos-delay="0">
+            <img class="w-full h-44 object-cover" src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1600&auto=format&fit=crop" alt="Mocha" />
+            <div class="p-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold">Mocha</h3>
+                <span class="text-amber-700 font-semibold">Signature</span>
+              </div>
+              <p class="mt-1 text-sm text-stone-600">Perpaduan cokelat premium dan espresso.
+              </p>
+            </div>
+          </article>
+          <article class="bg-white border border-stone-200 rounded-2xl overflow-hidden card-hover" data-aos="fade-up" data-aos-delay="80">
+            <img class="w-full h-44 object-cover" src="https://images.unsplash.com/photo-1517701604599-bb29b565090c?q=80&w=1600&auto=format&fit=crop" alt="Espresso" />
+            <div class="p-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold">Espresso</h3>
+                <span class="text-amber-700 font-semibold">Classic</span>
+              </div>
+              <p class="mt-1 text-sm text-stone-600">Shot pekat untuk start kilat.</p>
+            </div>
+          </article>
+          <article class="bg-white border border-stone-200 rounded-2xl overflow-hidden card-hover" data-aos="fade-up" data-aos-delay="160">
+            <img class="w-full h-44 object-cover" src="https://images.unsplash.com/photo-1498804103079-a6351b050096?q=80&w=1600&auto=format&fit=crop" alt="Americano" />
+            <div class="p-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold">Americano</h3>
+                <span class="text-amber-700 font-semibold">Light</span>
+              </div>
+              <p class="mt-1 text-sm text-stone-600">Espresso + air panas. Simple, strong.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Our Experts Says (Slider 3 data) -->
+    <section class="py-16 bg-stone-50 relative" id="experts" data-aos="fade-up" data-aos-delay="80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-left mb-12" data-aos="fade-up">
+            Our Experts Says
+            </h2>
+
+            <!-- Swiper -->
+            <div class="swiper expertsSwiper relative">
+            <div class="swiper-wrapper">
+                <!-- Slide 1 -->
+                <div class="swiper-slide flex flex-col md:flex-row items-center gap-6 bg-white rounded-2xl shadow-lg p-6">
+                <div class="flex-shrink-0">
+                    <img src="https://fore.coffee/wp-content/uploads/2023/08/4-1.png" 
+                        alt="Expert 1"
+                        class="w-40 h-40 md:w-56 md:h-56 rounded-full ring-4 ring-white shadow-lg object-cover mx-auto md:mx-0">
+                </div>
+                <div class="text-center md:text-left">
+                    <h3 class="text-lg md:text-xl font-semibold">Budi Santoso</h3>
+                    <p class="text-sm text-stone-500 mb-4">Chief Coffee Officer</p>
+                    <p class="text-stone-700 leading-relaxed text-sm md:text-base">
+                    Kami mentransformasi visi kami dalam menawarkan kopi berkualitas tinggi ke pelanggan
+                    menjadi sebuah prestasi yang bisa dicapai. Misi kami termasuk menciptakan dampak ke komunitas
+                    melalui pembangunan cabang strategis dan partnership yang kreatif.
+                    </p>
+                </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="swiper-slide flex flex-col md:flex-row items-center gap-6 bg-white rounded-2xl shadow-lg p-6">
+                <div class="flex-shrink-0">
+                    <img src="https://fore.coffee/wp-content/uploads/2024/10/Pie.png" 
+                        alt="Expert 2"
+                        class="w-40 h-40 md:w-56 md:h-56 rounded-full ring-4 ring-white shadow-lg object-cover mx-auto md:mx-0">
+                </div>
+                <div class="text-center md:text-left">
+                    <h3 class="text-lg md:text-xl font-semibold">Maria Pie</h3>
+                    <p class="text-sm text-stone-500 mb-4">Chief Financial Officer</p>
+                    <p class="text-stone-700 leading-relaxed text-sm md:text-base">
+                    Sebagai CFO, saya berkomitmen penuh menghadirkan budaya kopi positif secara global.
+                    Melalui manajemen keuangan yang strategis, kami berupaya membangun model bisnis yang tangguh
+                    dan berwawasan lingkungan.
+                    </p>
+                </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="swiper-slide flex flex-col md:flex-row items-center gap-6 bg-white rounded-2xl shadow-lg p-6">
+                <div class="flex-shrink-0">
+                    <img src="https://fore.coffee/wp-content/uploads/2024/10/Matt.png" 
+                        alt="Expert 3"
+                        class="w-40 h-40 md:w-56 md:h-56 rounded-full ring-4 ring-white shadow-lg object-cover mx-auto md:mx-0">
+                </div>
+                <div class="text-center md:text-left">
+                    <h3 class="text-lg md:text-xl font-semibold">Matthew John</h3>
+                    <p class="text-sm text-stone-500 mb-4">Head of Product</p>
+                    <p class="text-stone-700 leading-relaxed text-sm md:text-base">
+                    Di Fore Coffee, kami mengutamakan Customer Centric dan Product Centric sebagai visi
+                    untuk menjadi pelopor ‘The New Coffee Culture’. Setiap kreasi menceritakan sebuah kisah.
+                    </p>
+                </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="absolute bottom-2 right-4 flex items-center gap-3 z-10">
+                <div class="swiper-button-prev !static w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-md text-stone-600 hover:bg-stone-100"></div>
+                <div class="swiper-button-next !static w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-md text-stone-600 hover:bg-stone-100"></div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="swiper-pagination mt-4"></div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 5. Our Team -->
+    <section id="team" class="py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl md:text-3xl font-bold" data-aos="fade-up">Our Team</h2>
+        <p class="text-stone-600 mt-1" data-aos="fade-up" data-aos-delay="80">Tim kecil, impak besar. Kami ngopi, ngoding, lalu ngopi lagi.</p>
+        <div class="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+          <!-- Member card template (repeat) -->
+          <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden card-hover" data-aos="zoom-in">
+            <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=1200&auto=format&fit=crop" class="w-full h-40 object-cover" alt="Team"/>
+            <div class="p-4">
+              <div class="font-semibold">Reno Alamsyah</div>
+              <div class="text-sm text-stone-600">Operations</div>
+            </div>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden card-hover" data-aos="zoom-in" data-aos-delay="60">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1200&auto=format&fit=crop" class="w-full h-40 object-cover" alt="Team"/>
+            <div class="p-4">
+              <div class="font-semibold">Nadia Putri</div>
+              <div class="text-sm text-stone-600">Marketing</div>
+            </div>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden card-hover" data-aos="zoom-in" data-aos-delay="120">
+            <img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=1200&auto=format&fit=crop" class="w-full h-40 object-cover" alt="Team"/>
+            <div class="p-4">
+              <div class="font-semibold">Raka Wijaya</div>
+              <div class="text-sm text-stone-600">Tech Lead</div>
+            </div>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl overflow-hidden card-hover" data-aos="zoom-in" data-aos-delay="180">
+            <img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=1200&auto=format&fit=crop" class="w-full h-40 object-cover" alt="Team"/>
+            <div class="p-4">
+              <div class="font-semibold">Sari Melati</div>
+              <div class="text-sm text-stone-600">Product</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Pencapaian (Stepper Timeline) -->
+    <section class="py-16 bg-stone-50" id="milestones">
+    <div class="max-w-6xl mx-auto px-4">
+        <h2 class="text-2xl md:text-3xl font-bold" data-aos="fade-up">Pencapaian</h2>
+
+        <div class="relative pl-12 space-y-16 timeline-container">
+        <!-- Garis Vertikal -->
+        <div class="absolute left-[10px] top-0 w-[4px] h-full bg-amber-500 origin-top scale-y-0 animate-growLine"></div>
+
+        <!-- Item Timeline -->
+        <div class="relative flex flex-col md:flex-row items-start gap-6 bg-white rounded-xl shadow-md p-6" data-aos="fade-up">
+            <div class="absolute left-[8px] top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-amber-500 border-4 border-white z-10 stepper-dot"></div>
+            <p class="font-semibold text-stone-700 md:w-24">2018</p>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+            <img src="https://fore.coffee/wp-content/uploads/2023/10/apps-1.png" class="rounded-xl shadow-md border border-stone-200">
+            <div>
+                <h3 class="font-semibold text-lg mb-2 text-stone-800">Outlet Pertama</h3>
+                <ul class="list-disc list-inside text-stone-600 space-y-1">
+                <li>Tim manajemen kuat</li>
+                <li>Produk premium terjangkau</li>
+                <li>Bisnis berkelanjutan</li>
+                </ul>
+            </div>
+            </div>
+        </div>
+
+        <!-- Item Timeline -->
+        <div class="relative flex flex-col md:flex-row items-start gap-6 bg-white rounded-xl shadow-md p-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="absolute left-[8px] top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-amber-500 border-4 border-white z-10 stepper-dot"></div>
+            <p class="font-semibold text-stone-700 md:w-24">2024</p>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+            <img src="https://fore.coffee/wp-content/uploads/2023/10/apps-1.png" class="rounded-xl shadow-md border border-stone-200">
+            <div>
+                <h3 class="font-semibold text-lg mb-2 text-stone-800">Ekspansi Besar</h3>
+                <ul class="list-disc list-inside text-stone-600 space-y-1">
+                <li>217 outlet beroperasi</li>
+                <li>Peningkatan customer base</li>
+                <li>Digitalisasi sistem</li>
+                </ul>
+            </div>
+            </div>
+        </div>
+
+        <!-- Item Timeline -->
+        <div class="relative flex flex-col md:flex-row items-start gap-6 bg-white rounded-xl shadow-md p-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="absolute left-[8px] top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-amber-500 border-4 border-white z-10 stepper-dot"></div>
+            <p class="font-semibold text-stone-700 md:w-24">2025</p>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+            <img src="https://fore.coffee/wp-content/uploads/2023/10/apps-1.png" class="rounded-xl shadow-md border border-stone-200">
+            <div>
+                <h3 class="font-semibold text-lg mb-2 text-stone-800">Menuju Go-Global</h3>
+                <ul class="list-disc list-inside text-stone-600 space-y-1">
+                <li>Ekspansi Asia Tenggara</li>
+                <li>Mitra internasional</li>
+                <li>Menu global</li>
+                </ul>
+            </div>
+            </div>
+        </div>
+
+        <!-- Additional Items (hidden by default) -->
+        <div id="additional-milestones" class="hidden space-y-16">
+            <!-- Item 4 -->
+            <div class="relative flex flex-col md:flex-row items-start gap-6 bg-white rounded-xl shadow-md p-6" data-aos="fade-up" data-aos-delay="600">
+            <div class="absolute left-[8px] top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-amber-500 border-4 border-white z-10 stepper-dot"></div>
+            <p class="font-semibold text-stone-700 md:w-24">2026</p>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+                <img src="https://fore.coffee/wp-content/uploads/2023/10/apps-1.png" class="rounded-xl shadow-md border border-stone-200">
+                <div>
+                <h3 class="font-semibold text-lg mb-2 text-stone-800">Inovasi Produk Baru</h3>
+                <ul class="list-disc list-inside text-stone-600 space-y-1">
+                    <li>Meluncurkan produk kopi ramah lingkungan</li>
+                    <li>Kolaborasi dengan petani lokal</li>
+                    <li>Program loyalitas pelanggan</li>
+                </ul>
+                </div>
+            </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="relative flex flex-col md:flex-row items-start gap-6 bg-white rounded-xl shadow-md p-6" data-aos="fade-up" data-aos-delay="800">
+            <div class="absolute left-[8px] top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-amber-500 border-4 border-white z-10 stepper-dot"></div>
+            <p class="font-semibold text-stone-700 md:w-24">2027</p>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+                <img src="https://fore.coffee/wp-content/uploads/2023/10/apps-1.png" class="rounded-xl shadow-md border border-stone-200">
+                <div>
+                <h3 class="font-semibold text-lg mb-2 text-stone-800">Ekspansi Internasional</h3>
+                <ul class="list-disc list-inside text-stone-600 space-y-1">
+                    <li>Memasuki pasar Eropa</li>
+                    <li>Kerja sama dengan mitra global</li>
+                    <li>Peluncuran menu eksklusif</li>
+                </ul>
+                </div>
+            </div>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="relative flex flex-col md:flex-row items-start gap-6 bg-white rounded-xl shadow-md p-6" data-aos="fade-up" data-aos-delay="1000">
+            <div class="absolute left-[8px] top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-amber-500 border-4 border-white z-10 stepper-dot"></div>
+            <p class="font-semibold text-stone-700 md:w-24">2028</p>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+                <img src="https://fore.coffee/wp-content/uploads/2023/10/apps-1.png" class="rounded-xl shadow-md border border-stone-200">
+                <div>
+                <h3 class="font-semibold text-lg mb-2 text-stone-800">Sustainability Goals</h3>
+                <ul class="list-disc list-inside text-stone-600 space-y-1">
+                    <li>100% bahan baku ramah lingkungan</li>
+                    <li>Netral karbon pada seluruh operasi</li>
+                    <li>Program CSR berkelanjutan</li>
+                </ul>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- Show More / Show Less Button -->
+        <div class="text-center mt-8">
+        <button id="toggle-milestones" class="px-6 py-2 rounded-lg bg-amber-600 text-white hover:bg-amber-700 flex items-center justify-center gap-2 mx-auto">
+            <span>Show More</span>
+            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        </button>
+        </div>
+    </div>
+    </section>
+
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-stone-900 text-stone-200 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid md:grid-cols-3 gap-10">
+      
+      <!-- Brand -->
+      <div>
+        <div class="flex items-center gap-2 font-semibold text-white">
+          <i class="fas fa-mug-hot text-amber-500"></i>
+          <!-- <i data-lucide="cup-soda" class="w-6 h-6 text-amber-500"></i> -->
+          <span>KopiKita</span>
+        </div>
+        <p class="mt-4 text-stone-400 text-sm">
+          Teman setia begadang, nugas, dan ngoding.  
+          Jangan lupa kopi dulu biar hidup gak error.
+        </p>
+      </div>
+
+      <!-- Social Media -->
+      <div>
+        <h3 class="text-white font-semibold mb-3">Media Sosial</h3>
+        <ul class="space-y-2 text-sm">
+          <li>
+        <a href="https://www.youtube.com/@kopikita" target="_blank" rel="noopener" class="flex items-center gap-2 hover:text-amber-500">
+          <i data-lucide="youtube" class="w-4 h-4 text-amber-500"></i>
+          <span>YouTube</span>
+        </a>
+          </li>
+          <li>
+        <a href="https://twitter.com/kopikita" target="_blank" rel="noopener" class="flex items-center gap-2 hover:text-amber-500">
+          <i data-lucide="twitter" class="w-4 h-4 text-amber-500"></i>
+          <span>X (Twitter)</span>
+        </a>
+          </li>
+          <li>
+        <a href="https://instagram.com/kopikita" target="_blank" rel="noopener" class="flex items-center gap-2 hover:text-amber-500">
+          <i data-lucide="instagram" class="w-4 h-4 text-amber-500"></i>
+          <span>Instagram</span>
+        </a>
+          </li>
+          <li>
+        <a href="https://tiktok.com/@kopikita" target="_blank" rel="noopener" class="flex items-center gap-2 hover:text-amber-500">
+          <i class="fab fa-tiktok w-4 h-4 text-amber-500"></i>
+          <span>TikTok</span>
+        </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h3 class="text-white font-semibold mb-3">Kontak</h3>
+        <ul class="space-y-2 text-sm">
+          <li class="flex items-center gap-2">
+            <i data-lucide="mail" class="w-4 h-4 text-amber-500"></i>
+            <span>halo@kopikita.id</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <i data-lucide="phone" class="w-4 h-4 text-amber-500"></i>
+            <span>+62 812-3456-7890</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <i data-lucide="map-pin" class="w-4 h-4 text-amber-500"></i>
+            <span>Jl. Kopi No. 1, Jakarta</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom -->
+    <div class="border-t border-stone-700 py-4 text-center text-xs text-stone-500">
+      © <span id="year"></span> KopiKita. Dibuat dengan HTML + Tailwind + JS Vanilla.  
+      <br class="sm:hidden"/>Ngopi boleh, nge-commit pas ngantuk jangan!
+    </div>
+  </footer>
+
+  <!-- Mobile Bottom Nav (optional) -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-stone-200 shadow-lg md:hidden z-50">
+    <div class="flex justify-around items-center py-2 text-sm text-stone-600">
+      <a href="#about" class="flex flex-col items-center hover:text-amber-600"><i data-lucide="home" class="w-5 h-5"></i><span>About</span></a>
+      <a href="#products" class="flex flex-col items-center hover:text-amber-600"><i data-lucide="coffee" class="w-5 h-5"></i><span>Produk</span></a>
+      <a href="#experts" class="flex flex-col items-center hover:text-amber-600"><i data-lucide="users" class="w-5 h-5"></i><span>Experts</span></a>
+      <a href="#team" class="flex flex-col items-center hover:text-amber-600"><i data-lucide="id-card" class="w-5 h-5"></i><span>Team</span></a>
+    </div>
+  </nav>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Inisialisasi AOS dan Lucide Icons
+    lucide.createIcons();
+    AOS.init({ once: true, duration: 600, easing: 'ease-out-cubic' });
+
+    // Swiper untuk slider
+    new Swiper('.swiper', {
+      loop: true,
+      autoplay: { delay: 3500, disableOnInteraction: false },
+      speed: 600,
+      slidesPerView: 1,
+      spaceBetween: 16,
+      pagination: { el: '.swiper-pagination', clickable: true },
+      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+    });
+
+    // Intersection Observer untuk Stepper
+    const stepperItems = document.querySelectorAll('.timeline-container > div');
+    const verticalLine = document.querySelector('.timeline-container::before');
+    const toggleButton = document.getElementById('toggle-milestones');
+    const additionalMilestones = document.getElementById('additional-milestones');
+    const toggleIcon = toggleButton.querySelector('i');
+    const toggleText = toggleButton.querySelector('span');
+
+    toggleButton.addEventListener('click', () => {
+      if (additionalMilestones.classList.contains('hidden')) {
+        additionalMilestones.classList.remove('hidden');
+        toggleText.textContent = 'Show Less';
+        toggleIcon.setAttribute('data-lucide', 'chevron-up');
+      } else {
+        additionalMilestones.classList.add('hidden');
+        toggleText.textContent = 'Show More';
+        toggleIcon.setAttribute('data-lucide', 'chevron-down');
+      }
+      lucide.createIcons(); // Refresh icons
+    });
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Tambahkan animasi garis
+          const line = document.querySelector('.animate-growLine');
+          if (line) {
+            line.style.animationPlayState = 'running';
+          }
+
+          // Aktifkan animasi stepper
+          const stepperDot = entry.target.querySelector('.stepper-dot');
+          if (stepperDot) {
+            stepperDot.classList.add('animate-pulseDot');
+          }
+
+          // Hentikan pengamatan setelah animasi berjalan
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 }); // 50% elemen terlihat di viewport
+
+    // Tambahkan setiap item stepper ke observer
+    stepperItems.forEach(item => observer.observe(item));
+
+    // Tambahkan tahun dinamis di footer
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+
+    // Inisialisasi Lucide Icons
+    lucide.createIcons();
+
+    // Tombol hamburger untuk membuka/menutup menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden'); // Tampilkan atau sembunyikan menu
+    });
+
+    // Tutup menu saat salah satu item di menu diklik
+    const navLinks = document.querySelectorAll('#mobileMenu .nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden'); // Sembunyikan menu
+      });
+    });
+  });
+</script>
+</body>
+</html>
