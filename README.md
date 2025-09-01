@@ -33,6 +33,7 @@ Berikut adalah beberapa tampilan dari website KopiKita:
     <img src="Screenshot/About-4.png" width="400" />
     <img src="Screenshot/About-5.png" width="400" />
     <img src="Screenshot/About-6.png" width="400" />
+    <img src="Screenshot/About-7.png" width="400" />
 </p>
 
 ## Cara Menjalankan Proyek
