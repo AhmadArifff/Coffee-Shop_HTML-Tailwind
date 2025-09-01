@@ -18,18 +18,21 @@ KopiKita adalah website coffee shop yang dibangun menggunakan **HTML**, **Tailwi
 - **Swiper.js**: Slider produk dan ulasan.
 
 ## Tampilan Website
-
-### Halaman Home
-![Home Page](Screensho/home.png)
-
-### Halaman About
-![About Page](Screensho/about.png)
-
-### Halaman Katalog
-![Catalog Page](Screensho/catalog.png)
-
-### Halaman Payment
-![Payment Page](Screensho/payment.png)
+<p align='Left' valign='top'>
+  <span>
+        <img src='ScreenShot/Home-1.png'  width=400 />
+        <img src='ScreenShot/Home-2.png'  width=400 />
+        <img src='ScreenShot/Home-3.png'  width=400 />
+        <img src='ScreenShot/Home-4.png'  width=400 />
+        <img src='ScreenShot/Home-5.png'  width=400 />
+        <img src='ScreenShot/About-1.png'  width=400 />
+        <img src='ScreenShot/About-2.png'  width=400 />
+        <img src='ScreenShot/About-3.png'  width=400 />
+        <img src='ScreenShot/About-4.png'  width=400 />
+        <img src='ScreenShot/About-5.png'  width=400 />
+        <img src='ScreenShot/About-6.png'  width=400 />
+  </span>
+</p>
 
 ## Cara Menjalankan Proyek
 
@@ -56,7 +59,5 @@ Coffee-Shop_HTML-Tailwind/
 ├── Screensho/         # Folder gambar tampilan
 │   ├── home.png       # Screenshot halaman Home
 │   ├── about.png      # Screenshot halaman About
-│   ├── catalog.png    # Screenshot halaman Katalog
-│   └── payment.png    # Screenshot halaman Payment
 └── ...
 ```
