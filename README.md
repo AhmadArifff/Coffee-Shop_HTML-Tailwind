@@ -18,20 +18,21 @@ KopiKita adalah website coffee shop yang dibangun menggunakan **HTML**, **Tailwi
 - **Swiper.js**: Slider produk dan ulasan.
 
 ## Tampilan Website
-<p align='Left' valign='top'>
-  <span>
-        <img src='https://github.com/AhmadArifff/Coffee-Shop_HTML-Tailwind/tree/dev/Screenshot/Home-1.png'  width=400 />
-        <img src='https://github.com/AhmadArifff/Coffee-Shop_HTML-Tailwind/tree/dev/Screenshot/Home-2.png'  width=400 />
-        <img src='https://github.com/AhmadArifff/Coffee-Shop_HTML-Tailwind/tree/dev/Screenshot/Home-3.png'  width=400 />
-        <img src='https://github.com/AhmadArifff/Coffee-Shop_HTML-Tailwind/tree/dev/Screenshot/Home-4.png'  width=400 />
-        <img src='https://github.com/AhmadArifff/Coffee-Shop_HTML-Tailwind/tree/dev/Screenshot/Home-5.png'  width=400 />
-        <img src='https://github.com/AhmadArifff/Coffee-Shop_HTML-Tailwind/tree/dev/Screenshot/About-1.png'  width=400 />
-        <img src='https://github.com/AhmadArifff/Coffee-Shop_HTML-Tailwind/tree/dev/Screenshot/About-2.png'  width=400 />
-        <img src='https://github.com/AhmadArifff/Coffee-Shop_HTML-Tailwind/tree/dev/Screenshot/About-3.png'  width=400 />
-        <img src='https://github.com/AhmadArifff/Coffee-Shop_HTML-Tailwind/tree/dev/Screenshot/About-4.png'  width=400 />
-        <img src='https://github.com/AhmadArifff/Coffee-Shop_HTML-Tailwind/tree/dev/Screenshot/About-5.png'  width=400 />
-        <img src='https://github.com/AhmadArifff/Coffee-Shop_HTML-Tailwind/tree/dev/Screenshot/About-6.png'  width=400 />
-  </span>
+
+Berikut adalah beberapa tampilan dari website KopiKita:
+
+<p align="left">
+    <img src="Screenshot/Home-1.png" width="400" />
+    <img src="Screenshot/Home-2.png" width="400" />
+    <img src="Screenshot/Home-3.png" width="400" />
+    <img src="Screenshot/Home-4.png" width="400" />
+    <img src="Screenshot/Home-5.png" width="400" />
+    <img src="Screenshot/About-1.png" width="400" />
+    <img src="Screenshot/About-2.png" width="400" />
+    <img src="Screenshot/About-3.png" width="400" />
+    <img src="Screenshot/About-4.png" width="400" />
+    <img src="Screenshot/About-5.png" width="400" />
+    <img src="Screenshot/About-6.png" width="400" />
 </p>
 
 ## Cara Menjalankan Proyek
